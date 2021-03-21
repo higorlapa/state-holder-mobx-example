@@ -1,16 +1,66 @@
-# state_holder_mobx_example
+# StateHolder example
 
-A flutter app to demonstrate how to use state holders
+A StateHolder is a class that... holds the state.
 
-## Getting Started
+The key point is to separate mobx from the UI controller and also keep the state in a </br>
+single object.
 
-This project is a starting point for a Flutter application.
+In this way, we will have a more stable code and will make it easier to migrate from mobx anytime </br>
+if you ever need to.
 
-A few resources to get you started if this is your first Flutter project:
+Migrating to Bloc's cubit for example, would be super easy.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+### StateHolder
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```dart
+
+    import 'package:mobx/mobx.dart';
+
+    part 'home_state_holder.g.dart';
+
+    class HomeStateHolder = _HomeStateHolderStore with _$HomeStateHolder;
+
+    abstract class _HomeStateHolderStore with Store {
+      @observable
+      int count;
+
+      _HomeStateHolderStore({this.count = 1});
+
+      @action
+      void setCount({required int count}) {
+        this.count = count;
+      }
+    }
+
+```
+
+### UI Controller
+
+```dart
+    import 'state/home_state_holder.dart';
+
+    abstract class HomeController {
+      HomeStateHolder get state;
+
+      void onIncrementButtonTap();
+      void onDecrementButtonTap();
+    }
+
+    class HomeControllerImpl implements HomeController {
+      @override
+      HomeStateHolder get state => _state;
+
+      @override
+      void onDecrementButtonTap() {
+        _state.setCount(count: _state.count - 1);
+      }
+
+      @override
+      void onIncrementButtonTap() {
+        _state.setCount(count: _state.count + 1);
+      }
+
+      HomeStateHolder _state = HomeStateHolder();
+    }
+
+```

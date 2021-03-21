@@ -1,4 +1,4 @@
-import 'package:state_holder_mobx_example/views/home/controller/state/home_state_holder.dart';
+import 'state/home_state_holder.dart';
 
 abstract class HomeController {
   HomeStateHolder get state;
